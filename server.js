@@ -11,7 +11,7 @@ mongoose.connect(process.env.MONGODB_URI)
     .then(() => console.log('Connected to MongoDB'))
     .catch(err => console.error('MongoDB connection error:', err));
 
-app.post('/api/sessions', async (requestAnimationFrame, res) => {
+app.post('/api/sessions', async (req, res) => {
     try {
         const { subject, durationMinutes, focusRating, notes } = req.body;
         const newSession = new HonestHour({ subject, durationMinutes, focusRating, notes });
@@ -21,3 +21,28 @@ app.post('/api/sessions', async (requestAnimationFrame, res) => {
         res.status(400).json({ error: error.message });
     }
 });
+
+app.get('/api/stats', async (req, res) => {
+    try {
+        const stats =await HonestHour.aggregate([
+            {
+                $group: {
+                    _id: "subject",
+                    totalMinutes: { $sum: "$durationMinutes" },
+                    averageFocus: { $avg: "$focusRating"}
+                }
+            },
+            {
+                $projects: {
+                    subject: "$_id",
+                    totalHours: { $divide: ["$totalMinutes", 60]},
+                    averageFocus: { $round: ["$averageFocus", 1]},
+                    _id: 0
+                }
+            }
+        ]);
+        res.status(200).json(stats);
+    } catch (error) {
+        res,status(500).json({ error: error.message });
+    }
+})
