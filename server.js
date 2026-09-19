@@ -46,3 +46,6 @@ app.get('/api/stats', async (req, res) => {
         res,status(500).json({ error: error.message });
     }
 })
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Chestnychas API running on port ${PORT}`));
