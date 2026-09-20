@@ -45,6 +45,7 @@ app.get('/api/stats', async (req, res) => {
         ]);
         res.status(200).json(stats);
     } catch (error) {
+        console.error("Aggregation Error:", error);
         res.status(500).json({ error: error.message });
     }
 })
