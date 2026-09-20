@@ -26,7 +26,7 @@ app.post('/api/sessions', async (req, res) => {
 
 app.get('/api/stats', async (req, res) => {
     try {
-        const stats =await HonestHour.aggregate([
+        const stats = await HonestHour.aggregate([
             {
                 $group: {
                     _id: "subject",
@@ -35,7 +35,7 @@ app.get('/api/stats', async (req, res) => {
                 }
             },
             {
-                $projects: {
+                $project: {
                     subject: "$_id",
                     totalHours: { $divide: ["$totalMinutes", 60]},
                     averageFocus: { $round: ["$averageFocus", 1]},
