@@ -29,7 +29,7 @@ app.get('/api/stats', async (req, res) => {
         const stats = await HonestHour.aggregate([
             {
                 $group: {
-                    _id: "subject",
+                    _id: "$subject",
                     totalMinutes: { $sum: "$durationMinutes" },
                     averageFocus: { $avg: "$focusRating"}
                 }
